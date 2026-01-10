@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Jan 08, 2026 at 08:49 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Host: 127.0.0.1
+-- Generation Time: Jan 10, 2026 at 08:48 PM
+-- Server version: 8.0.39
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,11 +28,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `batches` (
-  `batch_id` int(11) NOT NULL,
-  `parent_batch_id` int(11) DEFAULT NULL,
-  `commodities_id` int(11) NOT NULL,
-  `owner_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
+  `batch_id` int NOT NULL,
+  `parent_batch_id` int DEFAULT NULL,
+  `commodities_id` int NOT NULL,
+  `owner_id` int NOT NULL,
+  `quantity` int NOT NULL,
   `harvest_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -43,10 +43,10 @@ CREATE TABLE `batches` (
 --
 
 CREATE TABLE `commodities` (
-  `commodities_id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `unit_type` varchar(20) NOT NULL,
-  `perishable` tinyint(1) DEFAULT 1
+  `commodities_id` int NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `unit_type` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `perishable` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -56,9 +56,9 @@ CREATE TABLE `commodities` (
 --
 
 CREATE TABLE `govt_price_cap` (
-  `cap_id` int(11) NOT NULL,
-  `commodities_id` int(11) NOT NULL,
-  `max_price` int(11) NOT NULL,
+  `cap_id` int NOT NULL,
+  `commodities_id` int NOT NULL,
+  `max_price` int NOT NULL,
   `effective_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -69,9 +69,21 @@ CREATE TABLE `govt_price_cap` (
 --
 
 CREATE TABLE `role` (
-  `role_id` int(11) NOT NULL,
-  `role_name` varchar(20) NOT NULL CHECK (`role_name` in ('Farmer','Middleman','Wholesaler','Retailer','Admin','Inspector'))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `role_id` int NOT NULL,
+  `role_name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL
+) ;
+
+--
+-- Dumping data for table `role`
+--
+
+INSERT INTO `role` (`role_id`, `role_name`) VALUES
+(1, 'Farmer'),
+(2, 'Middleman'),
+(3, 'Wholesaler'),
+(4, 'Retailer'),
+(5, 'Admin'),
+(6, 'Inspector');
 
 -- --------------------------------------------------------
 
@@ -80,12 +92,12 @@ CREATE TABLE `role` (
 --
 
 CREATE TABLE `transactions` (
-  `transaction_id` int(11) NOT NULL,
-  `batch_id` int(11) DEFAULT NULL,
-  `seller_id` int(11) NOT NULL,
-  `buyer_id` int(11) NOT NULL,
-  `unit_price` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
+  `transaction_id` int NOT NULL,
+  `batch_id` int DEFAULT NULL,
+  `seller_id` int NOT NULL,
+  `buyer_id` int NOT NULL,
+  `unit_price` int NOT NULL,
+  `quantity` int NOT NULL,
   `transaction_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -96,14 +108,22 @@ CREATE TABLE `transactions` (
 --
 
 CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `phone` varchar(11) DEFAULT NULL CHECK (`phone` regexp '^[0-9]{11}$'),
-  `password` varchar(50) NOT NULL,
-  `role_id` int(11) DEFAULT NULL,
-  `status` varchar(20) DEFAULT 'Active' CHECK (`status` in ('Active','inactive','Suspended','Banned'))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `user_id` int NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `phone` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `password` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `role_id` int DEFAULT NULL,
+  `status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT 'Active'
+) ;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `name`, `email`, `phone`, `password`, `role_id`, `status`) VALUES
+(1, 'Rahim Hossain', 'rahim.farmer@gmail.com', '01711111111', 'farmer123', 1, 'Active'),
+(2, 'Admin Kabir', 'admin.kabir@gmail.com', '01800011100', 'admin123', 5, 'Active');
 
 -- --------------------------------------------------------
 
@@ -112,13 +132,13 @@ CREATE TABLE `users` (
 --
 
 CREATE TABLE `violations` (
-  `violation_id` int(11) NOT NULL,
-  `transaction_id` int(11) NOT NULL,
-  `seller_id` int(11) NOT NULL,
-  `buyer_id` int(11) NOT NULL,
-  `commodities_id` int(11) NOT NULL,
-  `reported_price` int(11) NOT NULL,
-  `max_allowed_price` int(11) NOT NULL,
+  `violation_id` int NOT NULL,
+  `transaction_id` int NOT NULL,
+  `seller_id` int NOT NULL,
+  `buyer_id` int NOT NULL,
+  `commodities_id` int NOT NULL,
+  `reported_price` int NOT NULL,
+  `max_allowed_price` int NOT NULL,
   `violation_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -189,43 +209,43 @@ ALTER TABLE `violations`
 -- AUTO_INCREMENT for table `batches`
 --
 ALTER TABLE `batches`
-  MODIFY `batch_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `batch_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `commodities`
 --
 ALTER TABLE `commodities`
-  MODIFY `commodities_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `commodities_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `govt_price_cap`
 --
 ALTER TABLE `govt_price_cap`
-  MODIFY `cap_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cap_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `role_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `transaction_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `violations`
 --
 ALTER TABLE `violations`
-  MODIFY `violation_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `violation_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
