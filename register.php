@@ -33,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="container">
+        <div class="top">Govt Market Monitor - Syndicate-Buster Portal</div>
+        <div class="registerBody">
         <p class="tital">Syndicate Buster</p>
         <?php if(isset($error)) echo "<p class='error'>$error</p>"; ?>
         <form action="register.php" method="post">  
@@ -58,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a href="login.html" class="linktxt">Already have an account?</a>
             </div>
         </form>
+        </div>
     </div>
 </body>
 </html>
