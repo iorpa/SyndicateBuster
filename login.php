@@ -50,13 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <div class="container">
-    <p class="tital">Syndicate Buster</p>
-
+        <div class="top">Govt Market Monitor - Syndicate-Buster Portal</div>
+<div class="registerBody">
     <!-- Display error message -->
     <?php if(!empty($error)) echo "<p class='error'>$error</p>"; ?>
 
     <form action="login.php" method="post">  
         <div class="information_form">
+            <div class="sub_title">Log In</div>
             <input type="text" name="username" class="input" placeholder="Username" required>
             <input type="password" name="password" class="input" placeholder="Password" required>
             <button type="submit" class="greenBtn">Log In</button>
@@ -65,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a href="register.php" class="limeBtn">Create new account</a>
         </div>
     </form>
+    </div>
 </div>  
 </body>
 </html>

@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jan 10, 2026 at 08:48 PM
--- Server version: 8.0.39
--- PHP Version: 8.0.30
+-- Host: 127.0.0.1:3306
+-- Generation Time: Jan 15, 2026 at 07:50 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,11 +28,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `batches` (
-  `batch_id` int NOT NULL,
-  `parent_batch_id` int DEFAULT NULL,
-  `commodities_id` int NOT NULL,
-  `owner_id` int NOT NULL,
-  `quantity` int NOT NULL,
+  `batch_id` int(11) NOT NULL,
+  `parent_batch_id` int(11) DEFAULT NULL,
+  `commodities_id` int(11) NOT NULL,
+  `owner_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
   `harvest_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -43,10 +43,10 @@ CREATE TABLE `batches` (
 --
 
 CREATE TABLE `commodities` (
-  `commodities_id` int NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `unit_type` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `perishable` tinyint(1) DEFAULT '1'
+  `commodities_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `unit_type` varchar(20) NOT NULL,
+  `perishable` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -56,9 +56,9 @@ CREATE TABLE `commodities` (
 --
 
 CREATE TABLE `govt_price_cap` (
-  `cap_id` int NOT NULL,
-  `commodities_id` int NOT NULL,
-  `max_price` int NOT NULL,
+  `cap_id` int(11) NOT NULL,
+  `commodities_id` int(11) NOT NULL,
+  `max_price` int(11) NOT NULL,
   `effective_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -69,9 +69,9 @@ CREATE TABLE `govt_price_cap` (
 --
 
 CREATE TABLE `role` (
-  `role_id` int NOT NULL,
-  `role_name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL
-) ;
+  `role_id` int(11) NOT NULL,
+  `role_name` varchar(20) NOT NULL CHECK (`role_name` in ('Farmer','Middleman','Wholesaler','Retailer','Admin','Inspector'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `role`
@@ -88,16 +88,33 @@ INSERT INTO `role` (`role_id`, `role_name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `syndicate_blacklist`
+--
+
+CREATE TABLE `syndicate_blacklist` (
+  `flag_id` int(11) NOT NULL,
+  `flag_date` date NOT NULL,
+  `transaction_id` int(11) NOT NULL,
+  `seller_id` int(11) NOT NULL,
+  `buyer_id` int(11) NOT NULL,
+  `commodities_id` int(11) NOT NULL,
+  `reported_price` int(11) NOT NULL,
+  `violation_date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `transactions`
 --
 
 CREATE TABLE `transactions` (
-  `transaction_id` int NOT NULL,
-  `batch_id` int DEFAULT NULL,
-  `seller_id` int NOT NULL,
-  `buyer_id` int NOT NULL,
-  `unit_price` int NOT NULL,
-  `quantity` int NOT NULL,
+  `transaction_id` int(11) NOT NULL,
+  `batch_id` int(11) DEFAULT NULL,
+  `seller_id` int(11) NOT NULL,
+  `buyer_id` int(11) NOT NULL,
+  `unit_price` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
   `transaction_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -108,39 +125,24 @@ CREATE TABLE `transactions` (
 --
 
 CREATE TABLE `users` (
-  `user_id` int NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `phone` varchar(11) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `password` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `role_id` int DEFAULT NULL,
-  `status` varchar(20) COLLATE utf8mb4_general_ci DEFAULT 'Active'
-) ;
+  `user_id` int(11) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone` varchar(11) DEFAULT NULL CHECK (`phone` regexp '^[0-9]{11}$'),
+  `password` varchar(50) NOT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  `status` varchar(20) DEFAULT 'Active' CHECK (`status` in ('Active','inactive','Suspended','Banned')),
+  `location` varchar(50) NOT NULL,
+  `trust_score` int(11) DEFAULT 100
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `name`, `email`, `phone`, `password`, `role_id`, `status`) VALUES
-(1, 'Rahim Hossain', 'rahim.farmer@gmail.com', '01711111111', 'farmer123', 1, 'Active'),
-(2, 'Admin Kabir', 'admin.kabir@gmail.com', '01800011100', 'admin123', 5, 'Active');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `violations`
---
-
-CREATE TABLE `violations` (
-  `violation_id` int NOT NULL,
-  `transaction_id` int NOT NULL,
-  `seller_id` int NOT NULL,
-  `buyer_id` int NOT NULL,
-  `commodities_id` int NOT NULL,
-  `reported_price` int NOT NULL,
-  `max_allowed_price` int NOT NULL,
-  `violation_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `users` (`user_id`, `username`, `email`, `phone`, `password`, `role_id`, `status`, `location`, `trust_score`) VALUES
+(2, 'karim', 'karim@gmail.com', '01711109999', '8888', 1, 'Active', 'Dhaka', 100),
+(3, 'rahim', 'rahim@gmail.com', '01999888888', '1234', 2, 'Active', 'Chittagong', 100);
 
 --
 -- Indexes for dumped tables
@@ -175,6 +177,16 @@ ALTER TABLE `role`
   ADD PRIMARY KEY (`role_id`);
 
 --
+-- Indexes for table `syndicate_blacklist`
+--
+ALTER TABLE `syndicate_blacklist`
+  ADD PRIMARY KEY (`flag_id`),
+  ADD KEY `fk_violation_transaction` (`transaction_id`),
+  ADD KEY `fk_violation_seller` (`seller_id`),
+  ADD KEY `fk_violation_buyer` (`buyer_id`),
+  ADD KEY `fk_violation_commodity` (`commodities_id`);
+
+--
 -- Indexes for table `transactions`
 --
 ALTER TABLE `transactions`
@@ -189,17 +201,8 @@ ALTER TABLE `transactions`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `unique_username` (`username`),
   ADD KEY `role_id` (`role_id`);
-
---
--- Indexes for table `violations`
---
-ALTER TABLE `violations`
-  ADD PRIMARY KEY (`violation_id`),
-  ADD KEY `fk_violation_transaction` (`transaction_id`),
-  ADD KEY `fk_violation_seller` (`seller_id`),
-  ADD KEY `fk_violation_buyer` (`buyer_id`),
-  ADD KEY `fk_violation_commodity` (`commodities_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -209,43 +212,43 @@ ALTER TABLE `violations`
 -- AUTO_INCREMENT for table `batches`
 --
 ALTER TABLE `batches`
-  MODIFY `batch_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `batch_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `commodities`
 --
 ALTER TABLE `commodities`
-  MODIFY `commodities_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `commodities_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `govt_price_cap`
 --
 ALTER TABLE `govt_price_cap`
-  MODIFY `cap_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `cap_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `role_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `syndicate_blacklist`
+--
+ALTER TABLE `syndicate_blacklist`
+  MODIFY `flag_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `transaction_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `violations`
---
-ALTER TABLE `violations`
-  MODIFY `violation_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
@@ -266,6 +269,15 @@ ALTER TABLE `govt_price_cap`
   ADD CONSTRAINT `fk_cap_commodity` FOREIGN KEY (`commodities_id`) REFERENCES `commodities` (`commodities_id`) ON UPDATE CASCADE;
 
 --
+-- Constraints for table `syndicate_blacklist`
+--
+ALTER TABLE `syndicate_blacklist`
+  ADD CONSTRAINT `fk_violation_buyer` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_violation_commodity` FOREIGN KEY (`commodities_id`) REFERENCES `commodities` (`commodities_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_violation_seller` FOREIGN KEY (`seller_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_violation_transaction` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`transaction_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `transactions`
 --
 ALTER TABLE `transactions`
@@ -278,15 +290,6 @@ ALTER TABLE `transactions`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`);
-
---
--- Constraints for table `violations`
---
-ALTER TABLE `violations`
-  ADD CONSTRAINT `fk_violation_buyer` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_violation_commodity` FOREIGN KEY (`commodities_id`) REFERENCES `commodities` (`commodities_id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_violation_seller` FOREIGN KEY (`seller_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_violation_transaction` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`transaction_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
