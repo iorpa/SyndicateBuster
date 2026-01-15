@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jan 15, 2026 at 07:50 PM
+-- Generation Time: Jan 15, 2026 at 11:43 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -36,6 +36,17 @@ CREATE TABLE `batches` (
   `harvest_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `batches`
+--
+
+INSERT INTO `batches` (`batch_id`, `parent_batch_id`, `commodities_id`, `owner_id`, `quantity`, `harvest_date`) VALUES
+(1, NULL, 1, 2, 1000, '2024-01-10'),
+(2, NULL, 2, 2, 800, '2024-01-05'),
+(3, NULL, 3, 3, 500, '2024-01-08'),
+(4, NULL, 4, 3, 300, '2024-01-03'),
+(5, NULL, 1, 4, 1200, '2024-01-12');
+
 -- --------------------------------------------------------
 
 --
@@ -49,6 +60,17 @@ CREATE TABLE `commodities` (
   `perishable` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `commodities`
+--
+
+INSERT INTO `commodities` (`commodities_id`, `name`, `unit_type`, `perishable`) VALUES
+(1, 'Rice', 'kg', 1),
+(2, 'Wheat', 'kg', 1),
+(3, 'Potato', 'kg', 1),
+(4, 'Onion', 'kg', 1),
+(5, 'Garlic', 'kg', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -61,6 +83,17 @@ CREATE TABLE `govt_price_cap` (
   `max_price` int(11) NOT NULL,
   `effective_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `govt_price_cap`
+--
+
+INSERT INTO `govt_price_cap` (`cap_id`, `commodities_id`, `max_price`, `effective_date`) VALUES
+(1, 1, 60, '2024-01-01'),
+(2, 2, 45, '2024-01-01'),
+(3, 3, 30, '2024-01-01'),
+(4, 4, 45, '2024-01-01'),
+(5, 5, 120, '2024-01-01');
 
 -- --------------------------------------------------------
 
@@ -118,6 +151,22 @@ CREATE TABLE `transactions` (
   `transaction_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `transactions`
+--
+
+INSERT INTO `transactions` (`transaction_id`, `batch_id`, `seller_id`, `buyer_id`, `unit_price`, `quantity`, `transaction_date`) VALUES
+(1, 1, 2, 3, 55, 100, '2026-01-16'),
+(2, 3, 3, 6, 28, 200, '2026-01-16'),
+(3, 5, 4, 5, 58, 150, '2026-01-16'),
+(4, NULL, 5, 7, 62, 50, '2026-01-16'),
+(5, NULL, 6, 7, 32, 100, '2026-01-16'),
+(6, 2, 2, 4, 42, 80, '2026-01-15'),
+(7, 4, 3, 5, 40, 60, '2026-01-14'),
+(8, NULL, 4, 7, 120, 20, '2026-01-16'),
+(9, NULL, 5, 6, 45, 70, '2026-01-16'),
+(10, NULL, 6, 7, 50, 40, '2026-01-16');
+
 -- --------------------------------------------------------
 
 --
@@ -133,16 +182,23 @@ CREATE TABLE `users` (
   `role_id` int(11) DEFAULT NULL,
   `status` varchar(20) DEFAULT 'Active' CHECK (`status` in ('Active','inactive','Suspended','Banned')),
   `location` varchar(50) NOT NULL,
-  `trust_score` int(11) DEFAULT 100
+  `trust_score` int(11) DEFAULT 100,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `username`, `email`, `phone`, `password`, `role_id`, `status`, `location`, `trust_score`) VALUES
-(2, 'karim', 'karim@gmail.com', '01711109999', '8888', 1, 'Active', 'Dhaka', 100),
-(3, 'rahim', 'rahim@gmail.com', '01999888888', '1234', 2, 'Active', 'Chittagong', 100);
+INSERT INTO `users` (`user_id`, `username`, `email`, `phone`, `password`, `role_id`, `status`, `location`, `trust_score`, `created_at`, `updated_at`) VALUES
+(2, 'karim', 'karim@gmail.com', '01711109999', '8888', 1, 'Active', 'Dhaka', 100, '2026-01-15 21:46:08', '2026-01-15 21:46:08'),
+(3, 'rahim', 'rahim@gmail.com', '01999888888', '1234', 2, 'Active', 'Chittagong', 100, '2026-01-15 21:46:08', '2026-01-15 21:46:08'),
+(4, 'Rifat hossain', 'admin@market.gov', '01700000000', 'admin123', 5, 'Active', 'Dhaka', 100, '2026-01-15 21:46:08', '2026-01-15 21:46:08'),
+(5, 'farmer_john', 'john@farmer.com', '01711111111', '1234', 1, 'Active', 'Rajshahi', 85, '2026-01-15 21:46:08', '2026-01-15 21:46:08'),
+(6, 'trader_ali', 'ali@trader.com', '01722222222', '1234', 2, 'Active', 'Chittagong', 90, '2026-01-15 21:46:08', '2026-01-15 21:46:08'),
+(7, 'wholesale_co', 'wholesale@market.com', '01733333333', '1234', 3, 'Suspended', 'Khulna', 60, '2026-01-15 21:46:08', '2026-01-15 21:46:08'),
+(8, 'retail_shop', 'retail@shop.com', '01744444444', '1234', 4, 'Active', 'Sylhet', 95, '2026-01-15 21:46:08', '2026-01-15 21:46:08');
 
 --
 -- Indexes for dumped tables
@@ -212,19 +268,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `batches`
 --
 ALTER TABLE `batches`
-  MODIFY `batch_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `batch_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `commodities`
 --
 ALTER TABLE `commodities`
-  MODIFY `commodities_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `commodities_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `govt_price_cap`
 --
 ALTER TABLE `govt_price_cap`
-  MODIFY `cap_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cap_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `role`
@@ -242,13 +298,13 @@ ALTER TABLE `syndicate_blacklist`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables

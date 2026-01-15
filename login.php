@@ -23,13 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['username'] = $user['username'];
             $_SESSION['role_id'] = $user['role_id'];
             switch ($user['role_id']) {
-                case 1: header("Location: farmer_dashboard.php"); break;
-                case 2: header("Location: middleman_dashboard.php"); break;
-                case 3: header("Location: wholesaler_dashboard.php"); break;
-                case 4: header("Location: retailer_dashboard.php"); break;
                 case 5: header("Location: admin_dashboard.php"); break;
-                case 6: header("Location: inspector_dashboard.php"); break;
-                default: header("Location: login.php"); break;
+                default: header("Location: vendorDashboard.php"); break;
             }
             exit();
         } else {
