@@ -62,23 +62,22 @@ LIMIT 5");
 </head>
 <body>
     <div class="container">
+
         <div class="top">Govt Market Monitor - Syndicate-Buster Portal</div>
-<div class="dashboard">
-        <div class="header">
-         <h1>Welcome <?php echo htmlspecialchars($username); ?></h1>
-        <button class="logout-btn">Logout</button>
-        </div>
+        <div class="dashboard">
+            <div class="header">
+                 <h2>Welcome <?php echo htmlspecialchars($username); ?></h1>
+                <button class="logout-btn">Logout</button>
+            </div>
     
-            <div class="nav-menu">
-            <a href="#">Dashboard</a>
-            <a href="#">Manage Users</a>
-            <a href="#">Price Caps</a>
-            <a href="#">Violations</a>
-            <a href="#">Blacklist</a>
-            <a href="#">Reports</a>
-    
-    </div>
-    
+             <div class="nav-menu">
+                <a href="admin_dashboard.php" style="background: rgba(255,255,255,0.1);">Dashboard</a>
+                <a href="ManageUsers.php">Manage Users</a>
+                <a href="PriceCap.php">Price Caps</a>
+                <a href="violation.php">Violations</a>
+                <a href="Blacklist.php">Blacklist</a>
+                <a href="reports.php">Reports</a>
+            </div>
     <div class="stats">
         <div class="card">
             <h3>Total Users </h3>
@@ -120,23 +119,24 @@ LIMIT 5");
         <div class="table-box">
             <h2>Recent Users</h2>
             <table>
-<thead>
+            <thead>
             <tr>
                 <th>Username</th>
                 <th>Role</th>
                 <th>Location</th>
                 <th>Status</th>
             </tr>
-        </thead>             <tbody>
+            </thead>          
+               <tbody>
                       <?php if($recent_users && $recent_users->num_rows > 0): ?>
                             <?php while($user = $recent_users->fetch_assoc()): 
                                 $status_class = 'status-' . strtolower($user['status']);
                             ?>
 
                             <tr>
-                                <td><?php echo htmlspecialchars($user['username']); ?></td>
-                                <td><?php echo htmlspecialchars($user['role_name']); ?></td>
-                                <td><?php echo htmlspecialchars($user['location']); ?></td>
+                                <td class="tableBoldText"><?php echo htmlspecialchars($user['username']); ?></td>
+                                <td class="tablesmallText"><?php echo htmlspecialchars($user['role_name']); ?></td>
+                                <td class="tablesmallText"><?php echo htmlspecialchars($user['location']); ?></td>
                                 <td><span class="status <?php echo $status_class; ?>"><?php echo $user['status']; ?></span></td>
 
                             </tr>
@@ -180,41 +180,23 @@ LIMIT 5");
                 </table>
             </div>
         </div>       
-    </div>
     
-    <!-- Price Caps -->
+    
     <div class="price-caps">
         <h2>Current Price Caps</h2>
         <div style="margin-top: 15px;">
             <div class="price-item">
                 <div class="price-header">
-                    <div class="price-name">Rice</div>
+                    <div class="tableBoldText" style="font-size: 18px;">Rice</div>
                     <button class="btn btn-edit">Edit</button>
                 </div>
                 <div class="price-value">৳ 60 / kg</div>
-                <div class="price-date">Effective: 2024-01-01 | Expires: 2024-06-30</div>
+                <div class="tablesmallText">Effective: 2024-01-01 | Expires: 2024-06-30</div>
             </div>
-            
-            <div class="price-item">
-                <div class="price-header">
-                    <div class="price-name">Onion</div>
-                    <button class="btn btn-edit">Edit</button>
-                </div>
-                <div class="price-value">৳ 45 / kg</div>
-                <div class="price-date">Effective: 2024-01-15 | Expires: 2024-07-15</div>
-            </div>
-            
-            <div class="price-item">
-                <div class="price-header">
-                    <div class="price-name">Potato</div>
-                    <button class="btn btn-edit">Edit</button>
-                </div>
-                <div class="price-value">৳ 30 / kg</div>
-                <div class="price-date">Effective: 2024-01-10 | Expires: 2024-06-10</div>
-            </div>
+           
         </div>
-    </div>
     
+    </div>
     
     <div class="footer">
         <p>Syndicate Buster Admin Panel © 2024</p>

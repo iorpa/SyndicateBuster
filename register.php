@@ -1,6 +1,7 @@
 <?php
 require_once "config.php";
-
+$error = "";
+$success = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $username = $_POST['username'];
@@ -14,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssi", $username, $email, $phone, $password, $role_id);
+    $stmt->bind_param("ssssis", $username, $email, $phone, $password, $role_id);
 
     if ($stmt->execute()) {
         header("Location: login.php");

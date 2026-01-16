@@ -35,6 +35,14 @@ $inventory_stmt = $conn->prepare($inventory_sql);
 $inventory_stmt->bind_param("i", $user_id);
 $inventory_stmt->execute();
 $inventory = $inventory_stmt->get_result();
+
+$price_caps = $conn->query("
+                    SELECT c.name,c.unit_type, gpc.max_price, gpc.effective_date 
+                    FROM govt_price_cap gpc 
+                    JOIN commodities c ON gpc.commodities_id = c.commodities_id 
+                    ORDER BY gpc.effective_date DESC
+                ");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -100,7 +108,7 @@ $inventory = $inventory_stmt->get_result();
                     <?php else: ?>
                         <p>No inventory found. Add your first batch!</p>
                     <?php endif; ?>
-                    <a href="sell_product.php"  class="addSellBatch">Add/Sell Batch</a>
+                    <a href="sell_product.php"  class="addSellBatchBtn">Add/Sell Batch</a>
                 </div>
                 
                 <div class="card">
@@ -122,36 +130,79 @@ $inventory = $inventory_stmt->get_result();
                 </div>
             </div>
             
-            <div class="card">
-                <h2>Current Price Caps</h2>
-                <?php
-                $price_caps = $conn->query("
-                    SELECT c.name, gpc.max_price, gpc.effective_date 
-                    FROM govt_price_cap gpc 
-                    JOIN commodities c ON gpc.commodities_id = c.commodities_id 
-                    ORDER BY gpc.effective_date DESC
-                ");
-                ?>
-                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-                    <thead>
-                        <tr style="background: #f8f9fa;">
-                            <th style="padding: 10px; text-align: left;">Commodity</th>
-                            <th style="padding: 10px; text-align: left;">Max Price (৳)</th>
-                            <th style="padding: 10px; text-align: left;">Effective From</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while($cap = $price_caps->fetch_assoc()): ?>
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 10px;"><?php echo $cap['name']; ?></td>
-                            <td style="padding: 10px;"><strong>৳ <?php echo $cap['max_price']; ?></strong></td>
-                            <td style="padding: 10px;"><?php echo $cap['effective_date']; ?></td>
-                        </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
+            
+
+
+             <div class="card">
+                <h2 style="color: #214332; margin-bottom: 20px;">Current Price Caps</h2>
+                <?php if($price_caps->num_rows > 0): ?>
+                    <table class="data-table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th>Commodity</th>
+                                <th>Max Price</th>
+                                <th>Effective Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            $price_caps->data_seek(0);
+                            while($cap = $price_caps->fetch_assoc()): 
+                            ?>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar" style="background-color: #28a745;">
+                                            <?php echo strtoupper(substr($cap['name'], 0, 1)); ?>
+                                        </div>
+                                        <div class="user-details">
+                                            <div class="tableBoldText"><?php echo htmlspecialchars($cap['name']); ?></div>
+                                            <div class="tablesmallText">Unit: <?php echo $cap['unit_type']; ?></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="tableBoldText" style="color: #28a745; font-size: 18px;">
+                                        ৳ <?php echo number_format($cap['max_price'], 2); ?>
+                                    </div>
+                                    <div class="tablesmallText">per <?php echo $cap['unit_type']; ?></div>
+                                </td>
+                                <td>
+                                    <div class="tableBoldText"><?php echo $cap['effective_date']; ?></div>
+                                    <div class="tablesmallText">
+                                        <?php 
+                                        $today = new DateTime();
+                                        $effective = new DateTime($cap['effective_date']);
+                                        $interval = $today->diff($effective);
+                                        
+                                        if ($effective <= $today) {
+                                            echo "Active for " . $interval->days . " days";
+                                        } else {
+                                            echo "Starts in " . $interval->days . " days";
+                                        }
+                                        ?>
+                                    </div>
+                                </td>
+                               
+                            </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <p>No price caps set yet.</p>
+                        <p>Use the form above to set your first price cap.</p>
+                    </div>
+                <?php endif; ?>
             </div>
+
+
+
         </div>
+          <div class="footer">
+                <p>Syndicate Buster Admin Panel © 2024</p>
+            
+            </div>
     </div>
 </body>
 </html>
