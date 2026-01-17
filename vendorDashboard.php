@@ -64,7 +64,7 @@ $price_caps = $conn->query("
                 </div>
                 <div>
                     <p>Trust Score: <strong><?php echo $trust_score; ?>/100</strong></p>
-                <button class="logout-btn">Logout</button>
+                    <button class="logout-btn">Logout</button>
                 </div>
             </div>
             <?php if($is_blacklisted): ?>
@@ -73,11 +73,12 @@ $price_caps = $conn->query("
                 Contact admin for appeal.
             </div>
             <?php endif; ?>
-            <div class="nav-menu">
-                <a href="vendor_dashboard.php">Dashboard</a>
+                <div class="nav-menu">
+                <a href="vendorDashboard.php" style="background: rgba(255,255,255,0.1);">Dashboard</a>
                 <a href="sell_product.php">Sell Product</a>
-                <a href="my_inventory.php">My Inventory</a>
-                <a href="view_transactions.php">Transactions</a>
+                <a href="userInventory.php">My Inventory</a>
+                <a href="userTransaction.php">Transactions</a>
+                <a href="userBlocklist.php">Violations</a>
                 <a href="index.php">Public Portal</a>
             </div>
             <div class="grid">
@@ -131,7 +132,6 @@ $price_caps = $conn->query("
             </div>
             
             
-
 
              <div class="card">
                 <h2 style="color: #214332; margin-bottom: 20px;">Current Price Caps</h2>
@@ -197,12 +197,12 @@ $price_caps = $conn->query("
             </div>
 
 
-
         </div>
-          <div class="footer">
+        <div class="footer">
                 <p>Syndicate Buster Admin Panel © 2024</p>
             
-            </div>
+        </div>
     </div>
 </body>
 </html>
+
