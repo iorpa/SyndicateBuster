@@ -1,0 +1,101 @@
+.greenBtn{
+    flex: 1;
+    margin: 0;
+    padding: 12px 20px;
+    background-color: #214332;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+}
+
+.greenBtn:hover {
+    background-color: #1a3528;
+}
+.greenBtn.secondary {
+    background-color: #17a2b8;
+}
+
+.greenBtn.secondary:hover {
+    background-color: #138496;
+}
+.smallBtn{
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.limebtn {
+    height: 40px;
+    background-color: #aee716;
+    display: flex;
+    align-items:center;
+    justify-content: center;
+    text-decoration: none;
+    font-weight: bold;
+    color: #ffffff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.limebtn:hover{
+    background-color: #9dce16;
+}
+
+
+.cardBtn {
+    color: rgb(0, 0, 0);
+    background-color: #ffffff;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.Green{
+    color: #ffffff;
+        background: #214332;
+}
+.Red{
+    color: #ffffff;
+        background-color: #e74c3c;
+}
+
+.LightGreen {
+    color: #ffffff;
+    background-color: #28a745;
+}
+
+.Cyan {
+    color: #ffffff;
+    background-color: #17a2b8;
+}
+
+.DarkRed {
+    color: #ffffff;
+    background-color: #dc3545;
+}
+
+.action-btn {
+    text-decoration: none;
+    background-color: #214332;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.action-btn:hover {
+    background-color: #1a3528;
+     transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}

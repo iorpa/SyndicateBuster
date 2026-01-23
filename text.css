@@ -1,0 +1,103 @@
+.sub_title{
+    color: #1f2c29;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.inputArea{
+    color: #676666;
+    height: 30px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.inputAreaText{
+    height: 40px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    
+}
+.filterText {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+}
+.search-box {
+    display: flex;
+    gap: 10px;
+}
+.search-box input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.linktxt{
+    font-size: 12px;
+    color: #214332;
+    text-align: center;
+    text-decoration: none;
+}
+
+.tital{
+    color: #214332;
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+}
+.hrline{
+    border: none;
+    height: 1px;
+    background-color: #ccc;
+}
+
+.GreenTextLarge{
+    color: #214332;
+    margin-bottom: 5px;
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+.tableBoldText {
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+}
+
+.tablesmallText{
+    color: #666;
+    font-size: 13px;
+}
+.textMedium{
+        font-size: 25px;
+        font-weight: bold;
+
+}
+.greenText{
+    color: #155724;
+}
+.redText{
+    color: #721c24;
+}
+.yellowText{
+    color: #856404;
+}
+.active {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.suspended {
+    background-color: #f8d7da;
+    color: #721c24;
+}
